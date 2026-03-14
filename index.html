@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mega Zoom Optique | Précision & Élégance</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <style>
+        /* === VARIABLES & RESET === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-dark: #1F2937;
+            --primary-orange: #F97316;
+            --primary-light: #F3F4F6;
+            --text-dark: #111827;
+            --text-light: #F9FAFB;
+            --gray-mid: #9CA3AF;
+            --success: #10B981;
+            --shadow-sm: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            background: var(--primary-light);
+            line-height: 1.5;
+            scroll-behavior: smooth;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .section-title .subtitle {
+            color: var(--primary-orange);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.85rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+
+        /* === TOP BAR === */
+        .top-bar {
+            background: var(--primary-dark);
+            color: white;
+            padding: 10px 0;
+            font-size: 0.9rem;
+        }
+
+        .top-bar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .top-bar i {
+            color: var(--primary-orange);
+            margin-right: 6px;
+        }
+
+        .top-bar a {
+            color: inherit;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        .top-bar a:hover {
+            opacity: 0.8;
+        }
+
+        /* === BADGE LIVRAISON GRATUITE (Cliquable & Clignotant) === */
+        .delivery-badge {
+            background: var(--primary-orange);
+            color: var(--primary-dark);
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            animation: blink-animation 1.5s ease-in-out infinite;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .delivery-badge:hover {
+            background: #e07b39;
+            transform: scale(1.02);
+            animation: none;
+        }
+        @keyframes blink-animation {
+            0% { opacity: 1; box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7); }
+            50% { opacity: 0.7; box-shadow: 0 0 10px 5px rgba(249, 115, 22, 0.5); }
+            100% { opacity: 1; box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
+        }
+
+        /* === MODALE INFO LIVRAISON === */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+        }
+        .modal-content h3 { color: var(--primary-orange); margin-bottom: 10px; }
+        .modal-content button {
+            background: var(--primary-dark);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            margin-top: 20px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* === NAVIGATION === */
+        .navbar {
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(10px);
+            padding: 16px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+        .logo span { color: var(--primary-orange); }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--primary-dark);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--primary-orange); }
+
+        .nav-btn {
+            background: var(--primary-orange);
+            color: var(--primary-dark);
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+        .nav-btn:hover { background: #e07b39; }
+
+        /* === HERO === */
+        .hero {
+            background: linear-gradient(rgba(31,41,55,0.8), rgba(31,41,55,0.8)), url('clario-20.png.jpg') center/cover no-repeat;
+            height: 85vh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: white;
+        }
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+        .hero-content h1 span {
+            color: var(--primary-orange);
+            display: block;
+            font-size: 2.8rem;
+            font-weight: 400;
+        }
+        .hero-buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .btn {
+            padding: 12px 32px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: var(--primary-orange);
+            color: var(--primary-dark);
+            border: 2px solid var(--primary-orange);
+        }
+        .btn-primary:hover { background: transparent; color: white; }
+        .btn-outline {
+            border: 2px solid white;
+            color: white;
+        }
+        .btn-outline:hover { background: white; color: var(--primary-dark); }
+
+        /* === SERVICES === */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+        .service-card {
+            background: white;
+            padding: 32px 24px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-mid);
+            transition: all 0.3s;
+        }
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-orange);
+        }
+        .service-card i {
+            font-size: 2.5rem;
+            color: var(--primary-orange);
+            margin-bottom: 16px;
+        }
+
+        /* === SLIDER BOUTIQUE === */
+        .slider-section {
+            background: var(--primary-dark);
+            padding: 80px 0;
+            overflow: hidden;
+        }
+        .slider-section .section-title h2 { color: white; }
+        .slider-container { margin-top: 40px; }
+        .slider-track {
+            display: flex;
+            width: fit-content;
+            animation: scroll 60s linear infinite;
+        }
+        .slider-track:hover { animation-play-state: paused; }
+        .slide {
+            width: 280px;
+            padding: 0 12px;
+            flex-shrink: 0;
+        }
+        .slide img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        .slide img:hover {
+            border-color: var(--primary-orange);
+            transform: scale(1.05);
+        }
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-6720px); }
+        }
+
+        /* === EXPERTISE - HAMZA & SÉRIE OPTIMA === */
+        .expertise-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        .expertise-image {
+            height: 500px;
+            background: url('clario-19.png.jpeg') center/cover no-repeat;
+            border-radius: 24px;
+            box-shadow: 20px 20px 0 var(--primary-orange);
+            position: relative;
+        }
+        .expertise-image::after {
+            content: 'M. Hamza Bahassi';
+            position: absolute;
+            bottom: 20px; left: -10px;
+            background: var(--primary-orange);
+            color: var(--primary-dark);
+            padding: 8px 24px;
+            font-weight: 700;
+            border-radius: 50px;
+        }
+        .badge {
+            background: rgba(249,115,22,0.1);
+            color: var(--primary-orange);
+            padding: 6px 18px;
+            border-radius: 50px;
+            display: inline-block;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        /* === SÉRIE OPTIMA (ex Clario-21) === */
+        .optima-showcase {
+            margin-top: 30px;
+            background: #f1f5f9;
+            padding: 24px;
+            border-radius: 24px;
+            border: 2px solid var(--primary-orange);
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .optima-showcase img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 16px;
+            border: 3px solid var(--primary-orange);
+        }
+        .optima-info h4 {
+            color: var(--primary-dark);
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        .optima-info h4 span { color: var(--primary-orange); }
+        .optima-info i { color: var(--primary-orange); margin-right: 8px; }
+
+        /* === FORMULAIRE DE RENDEZ-VOUS (SANS REDIRECTION DIRECTE) === */
+        .rdv-section {
+            background: linear-gradient(135deg, var(--primary-dark), #374151);
+        }
+        .rdv-card {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            padding: 48px;
+            border-radius: 32px;
+            box-shadow: var(--shadow-md);
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 24px 0;
+        }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+        }
+        .form-group input, .form-group select {
+            padding: 12px;
+            border: 2px solid var(--gray-mid);
+            border-radius: 8px;
+            font-family: inherit;
+            transition: border 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-orange);
+        }
+        .btn-submit {
+            background: var(--primary-orange);
+            color: var(--primary-dark);
+            border: none;
+            padding: 16px;
+            font-weight: 700;
+            border-radius: 50px;
+            width: 100%;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+        .btn-submit:hover { background: #e07b39; }
+
+        /* === SECTION CONTACT COMPLÈTE === */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+        .contact-info {
+            background: white;
+            padding: 32px;
+            border-radius: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+        .contact-info h3 {
+            color: var(--primary-orange);
+            margin-bottom: 24px;
+            font-size: 1.5rem;
+        }
+        .contact-detail {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .contact-detail i {
+            font-size: 1.5rem;
+            color: var(--primary-orange);
+            width: 30px;
+        }
+        .contact-detail a {
+            color: var(--text-dark);
+            text-decoration: none;
+        }
+        .contact-detail a:hover { color: var(--primary-orange); }
+        .map-container {
+            border-radius: 24px;
+            overflow: hidden;
+            height: 300px;
+        }
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* === CHATBOT === */
+        .chat-btn {
+            position: fixed;
+            bottom: 30px; left: 30px;
+            background: var(--primary-dark);
+            color: white;
+            width: 70px; height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 999;
+            border: 3px solid var(--primary-orange);
+            box-shadow: var(--shadow-md);
+            transition: all 0.2s;
+        }
+        .chat-btn:hover { transform: scale(1.1); background: var(--primary-orange); }
+        .chat-btn:hover i { color: var(--primary-dark); }
+        .chat-btn i { font-size: 2rem; transition: color 0.2s; }
+
+        .chat-box {
+            position: fixed;
+            bottom: 110px; left: 30px;
+            width: 320px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow-md);
+            display: none;
+            z-index: 1000;
+            border: 2px solid var(--primary-orange);
+        }
+        .chat-header {
+            background: var(--primary-dark);
+            color: white;
+            padding: 16px;
+            border-radius: 18px 18px 0 0;
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+        }
+        .chat-header span:last-child {
+            cursor: pointer;
+            color: var(--primary-orange);
+            font-size: 1.2rem;
+        }
+        .chat-body {
+            padding: 16px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .bot-message {
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            border-left: 4px solid var(--primary-orange);
+        }
+        .user-option {
+            background: var(--primary-dark);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .user-option:hover {
+            background: var(--primary-orange);
+            color: var(--primary-dark);
+            transform: translateX(-5px);
+        }
+
+        /* === WHATSAPP FLOATING === */
+        .wa-float {
+            position: fixed;
+            bottom: 30px; right: 30px;
+            background: #25D366;
+            color: white;
+            width: 70px; height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            z-index: 999;
+            animation: pulse 2s infinite;
+            text-decoration: none;
+            box-shadow: var(--shadow-md);
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(37,211,102,0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(37,211,102,0); }
+        }
+
+        /* === FOOTER === */
+        footer {
+            background: var(--primary-dark);
+            color: white;
+            padding: 60px 0 20px;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .footer-col h4 {
+            color: var(--primary-orange);
+            margin-bottom: 16px;
+        }
+        .footer-col ul {
+            list-style: none;
+        }
+        .footer-col li {
+            margin-bottom: 8px;
+        }
+        .footer-col a {
+            color: var(--gray-mid);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-col a:hover { color: var(--primary-orange); }
+        .footer-col i { margin-right: 8px; color: var(--primary-orange); }
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: var(--gray-mid);
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 992px) {
+            .services-grid { grid-template-columns: repeat(2, 1fr); }
+            .expertise-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: repeat(2, 1fr); }
+            .contact-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero-content h1 { font-size: 2.5rem; }
+            .form-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .optima-showcase { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <!-- MODALE INFO LIVRAISON -->
+    <div class="modal-overlay" id="deliveryModal">
+        <div class="modal-content">
+            <i class="fas fa-truck" style="font-size: 3rem; color: var(--primary-orange);"></i>
+            <h3>Livraison Gratuite</h3>
+            <p>Nous offrons la livraison gratuite pour toute commande, sans minimum d'achat. Valable dans tout le Maroc.</p>
+            <button onclick="document.getElementById('deliveryModal').style.display='none'">Fermer</button>
+        </div>
+    </div>
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <div class="container">
+            <span><i class="fas fa-map-marker-alt"></i> Bloc 8 N°15 Bis Youssoufia, Rabat</span>
+            <span class="delivery-badge" onclick="document.getElementById('deliveryModal').style.display='flex'">
+                <i class="fas fa-truck"></i> LIVRAISON GRATUITE
+            </span>
+            <span><i class="fas fa-phone-alt"></i> <a href="tel:+212752934107">07 52 93 41 07</a></span>
+        </div>
+    </div>
+
+    <!-- NAVIGATION -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">MEGA<span>ZOOM</span></div>
+            <div class="nav-links">
+                <a href="#services">Services</a>
+                <a href="#catalogue">Collection</a>
+                <a href="#expertise">Expert</a>
+                <a href="#rdv">Rendez-vous</a>
+                <a href="#contact">Contact</a>
+            </div>
+            <a href="#rdv" class="nav-btn">RDV</a>
+        </div>
+    </nav>
+
+    <!-- HERO (CLARIO-20) -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Édition Limitée <span>Optique de Précision</span></h1>
+            <p>Découvrez la clarté absolue avec notre nouvelle collection</p>
+            <div class="hero-buttons">
+                <a href="#catalogue" class="btn btn-outline">Explorer</a>
+                <a href="#rdv" class="btn btn-primary">Consultation</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section id="services" class="section">
+        <div class="container">
+            <div class="section-title">
+                <span class="subtitle">NOTRE SAVOIR-FAIRE</span>
+                <h2>Services Haute Précision</h2>
+            </div>
+            <div class="services-grid">
+                <div class="service-card"><i class="fas fa-eye"></i><h3>Examen de Vue</h3><p>Technologie Zeiss</p></div>
+                <div class="service-card"><i class="fas fa-glasses"></i><h3>Contactologie</h3><p>Adaptation expert</p></div>
+                <div class="service-card"><i class="fas fa-magic"></i><h3>Visagisme</h3><p>Conseil personnalisé</p></div>
+                <div class="service-card"><i class="fas fa-tools"></i><h3>Montage Artisanal</h3><p>Précision garantie</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BOUTIQUE ROULANTE (Tous les Clario sauf 8,20,21) -->
+    <section id="catalogue" class="slider-section">
+        <div class="container">
+            <div class="section-title">
+                <span class="subtitle">COLLECTION 2026</span>
+                <h2>Galerie Clario</h2>
+            </div>
+        </div>
+        <div class="slider-container">
+            <div class="slider-track">
+                <!-- Clario 1-7 -->
+                <div class="slide"><img src="clario-1.png.png" alt="Clario 1"></div>
+                <div class="slide"><img src="clario-2.png.png" alt="Clario 2"></div>
+                <div class="slide"><img src="clario-3.png.png" alt="Clario 3"></div>
+                <div class="slide"><img src="clario-4.png.png" alt="Clario 4"></div>
+                <div class="slide"><img src="clario-5.png.png" alt="Clario 5"></div>
+                <div class="slide"><img src="clario-6.png.png" alt="Clario 6"></div>
+                <div class="slide"><img src="clario-7.png.png" alt="Clario 7"></div>
+                <!-- Clario 9-19 -->
+                <div class="slide"><img src="clario-9.png.jpeg" alt="Clario 9"></div>
+                <div class="slide"><img src="clario-10.png.jpeg" alt="Clario 10"></div>
+                <div class="slide"><img src="clario-11.png.jpeg" alt="Clario 11"></div>
+                <div class="slide"><img src="clario-12.png.jpeg" alt="Clario 12"></div>
+                <div class="slide"><img src="clario-13.png.jpeg" alt="Clario 13"></div>
+                <div class="slide"><img src="clario-14.png.jpeg" alt="Clario 14"></div>
+                <div class="slide"><img src="clario-15.png.jpeg" alt="Clario 15"></div>
+                <div class="slide"><img src="clario-16.png.jpeg" alt="Clario 16"></div>
+                <div class="slide"><img src="clario-17.png.jpeg" alt="Clario 17"></div>
+                <div class="slide"><img src="clario-18.png.jpeg" alt="Clario 18"></div>
+                <div class="slide"><img src="clario-19.png.jpeg" alt="Clario 19"></div>
+                <!-- Clario 22-30 -->
+                <div class="slide"><img src="clario-22.png.jpeg" alt="Clario 22"></div>
+                <div class="slide"><img src="clario-23.png.jpeg" alt="Clario 23"></div>
+                <div class="slide"><img src="clario-24.png.jpeg" alt="Clario 24"></div>
+                <div class="slide"><img src="clario-25.png.jpeg" alt="Clario 25"></div>
+                <div class="slide"><img src="clario-26.png.jpeg" alt="Clario 26"></div>
+                <div class="slide"><img src="clario-27.png.jpeg" alt="Clario 27"></div>
+                <div class="slide"><img src="clario-28.png.jpeg" alt="Clario 28"></div>
+                <div class="slide"><img src="clario-29.png.jpeg" alt="Clario 29"></div>
+                <div class="slide"><img src="clario-30.png.jpeg" alt="Clario 30"></div>
+                <!-- Clario 40-41 -->
+                <div class="slide"><img src="clario-40.png.jpeg" alt="Clario 40"></div>
+                <div class="slide"><img src="clario-41.png.jpeg" alt="Clario 41"></div>
+                <!-- Doublons pour infini -->
+                <div class="slide"><img src="clario-1.png.png" alt="Clario 1"></div>
+                <div class="slide"><img src="clario-2.png.png" alt="Clario 2"></div>
+                <div class="slide"><img src="clario-3.png.png" alt="Clario 3"></div>
+                <div class="slide"><img src="clario-4.png.png" alt="Clario 4"></div>
+                <div class="slide"><img src="clario-5.png.png" alt="Clario 5"></div>
+                <div class="slide"><img src="clario-6.png.png" alt="Clario 6"></div>
+                <div class="slide"><img src="clario-7.png.png" alt="Clario 7"></div>
+                <div class="slide"><img src="clario-9.png.jpeg" alt="Clario 9"></div>
+                <div class="slide"><img src="clario-10.png.jpeg" alt="Clario 10"></div>
+                <div class="slide"><img src="clario-11.png.jpeg" alt="Clario 11"></div>
+                <div class="slide"><img src="clario-12.png.jpeg" alt="Clario 12"></div>
+                <div class="slide"><img src="clario-13.png.jpeg" alt="Clario 13"></div>
+                <div class="slide"><img src="clario-14.png.jpeg" alt="Clario 14"></div>
+                <div class="slide"><img src="clario-15.png.jpeg" alt="Clario 15"></div>
+                <div class="slide"><img src="clario-16.png.jpeg" alt="Clario 16"></div>
+                <div class="slide"><img src="clario-17.png.jpeg" alt="Clario 17"></div>
+                <div class="slide"><img src="clario-18.png.jpeg" alt="Clario 18"></div>
+                <div class="slide"><img src="clario-19.png.jpeg" alt="Clario 19"></div>
+                <div class="slide"><img src="clario-22.png.jpeg" alt="Clario 22"></div>
+                <div class="slide"><img src="clario-23.png.jpeg" alt="Clario 23"></div>
+                <div class="slide"><img src="clario-24.png.jpeg" alt="Clario 24"></div>
+                <div class="slide"><img src="clario-25.png.jpeg" alt="Clario 25"></div>
+                <div class="slide"><img src="clario-26.png.jpeg" alt="Clario 26"></div>
+                <div class="slide"><img src="clario-27.png.jpeg" alt="Clario 27"></div>
+                <div class="slide"><img src="clario-28.png.jpeg" alt="Clario 28"></div>
+                <div class="slide"><img src="clario-29.png.jpeg" alt="Clario 29"></div>
+                <div class="slide"><img src="clario-30.png.jpeg" alt="Clario 30"></div>
+                <div class="slide"><img src="clario-40.png.jpeg" alt="Clario 40"></div>
+                <div class="slide"><img src="clario-41.png.jpeg" alt="Clario 41"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EXPERTISE - HAMZA & SÉRIE OPTIMA (ex Clario-21) -->
+    <section id="expertise" class="section">
+        <div class="container">
+            <div class="expertise-grid">
+                <div class="expertise-image"></div>
+                <div>
+                    <span class="subtitle">VOTRE OPTICIEN</span>
+                    <h2>M. Hamza Bahassi</h2>
+                    <span class="badge">Opticien Diplômé IPIAB (2021)</span>
+                    <p>Expert en optométrie et santé visuelle, M. Bahassi assure un suivi personnalisé et rigoureux en collaboration avec des ophtalmologues.</p>
+                    
+                    <!-- SÉRIE OPTIMA (renommé) -->
+                    <div class="optima-showcase">
+                        <img src="clario-21.png.jpeg" alt="Série Optima">
+                        <div class="optima-info">
+                            <h4><span>Série</span> OPTIMA</h4>
+                            <p><i class="fas fa-check-circle"></i> Design épuré et moderne</p>
+                            <p><i class="fas fa-check-circle"></i> Protection lumière bleue</p>
+                            <p><i class="fas fa-check-circle"></i> Matériaux premium</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FORMULAIRE RENDEZ-VOUS -->
+    <section id="rdv" class="section rdv-section">
+        <div class="container">
+            <div class="rdv-card">
+                <div class="section-title">
+                    <span class="subtitle">PRENEZ RENDEZ-VOUS</span>
+                    <h2>Consultation Privée</h2>
+                </div>
+                <form id="rdvForm" onsubmit="handleFormSubmit(event)">
+                    <div class="form-grid">
+                        <div class="form-group"><label>Nom</label><input type="text" id="nom" required></div>
+                        <div class="form-group"><label>Prénom</label><input type="text" id="prenom" required></div>
+                        <div class="form-group"><label>Téléphone</label><input type="tel" id="tel" required></div>
+                        <div class="form-group"><label>Date</label><input type="date" id="date" required></div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label>Motif</label>
+                            <select id="motif" required>
+                                <option value="">Sélectionnez</option>
+                                <option>Examen complet</option>
+                                <option>Adaptation lentilles</option>
+                                <option>Choix montures</option>
+                                <option>Réparation</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit">CONFIRMER LA DEMANDE</button>
+                    <p id="formConfirmation" style="text-align:center; margin-top:15px; color:green; display:none;">✓ Demande envoyée ! Nous vous contacterons sous 24h.</p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION CONTACT COMPLÈTE -->
+    <section id="contact" class="section">
+        <div class="container">
+            <div class="section-title">
+                <span class="subtitle">NOUS TROUVER</span>
+                <h2>Contact & Accès</h2>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <h3><i class="fas fa-store"></i> Mega Zoom Optique</h3>
+                    <div class="contact-detail"><i class="fas fa-map-pin"></i> <span>Bloc 8 N°15 Bis, Youssoufia, Rabat</span></div>
+                    <div class="contact-detail"><i class="fas fa-phone"></i> <a href="tel:+212752934107">07 52 93 41
